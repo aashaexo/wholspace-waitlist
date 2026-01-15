@@ -35,8 +35,15 @@ if (isFirebaseConfigured()) {
     db = getFirestore(app)
     
     // Initialize Analytics (only in browser environment)
+    // Wrap in try-catch to prevent Analytics errors from breaking the app
     if (typeof window !== 'undefined') {
-      analytics = getAnalytics(app)
+      try {
+        analytics = getAnalytics(app)
+        console.log('✅ Firebase Analytics initialized')
+      } catch (analyticsError) {
+        console.warn('⚠️ Firebase Analytics failed to initialize (non-critical):', analyticsError)
+        analytics = null
+      }
     }
     
     console.log('✅ Firebase initialized successfully')
