@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40" fill="none">
+  <!-- Three horizontal wavy lines -->
+  <path d="M 0 10 Q 15 5, 30 10 T 60 10 T 90 10 T 120 10" 
+        stroke="white" 
+        stroke-width="2" 
+        fill="none" 
+        stroke-linecap="round" />
+  <path d="M 0 20 Q 15 15, 30 20 T 60 20 T 90 20 T 120 20" 
+        stroke="white" 
+        stroke-width="2" 
+        fill="none" 
+        stroke-linecap="round" />
+  <path d="M 0 30 Q 15 25, 30 30 T 60 30 T 90 30 T 120 30" 
+        stroke="white" 
+        stroke-width="2" 
+        fill="none" 
+        stroke-linecap="round" />
+</svg>
