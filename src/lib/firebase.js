@@ -1,7 +1,9 @@
 import { initializeApp } from 'firebase/app'
+import { getAnalytics } from 'firebase/analytics'
 import { getFirestore, collection, addDoc, query, where, getDocs, serverTimestamp } from 'firebase/firestore'
 
-// Firebase configuration
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyDf7ZdhnDUXGWA7_sTNltzLzbgOSbwQyg0",
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "wholspacewaitlist.firebaseapp.com",
@@ -9,47 +11,47 @@ const firebaseConfig = {
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "wholspacewaitlist.firebasestorage.app",
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "1042572889329",
   appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:1042572889329:web:46363421c970fc82fb2d50",
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-498594PC14"
 }
 
 // Check if Firebase is properly configured
 const isFirebaseConfigured = () => {
-  const hasAllRequired = firebaseConfig.apiKey && 
+  return firebaseConfig.apiKey && 
+         firebaseConfig.apiKey !== 'your-api-key' &&
          firebaseConfig.projectId && 
+         firebaseConfig.projectId !== 'your-project-id' &&
          firebaseConfig.authDomain &&
          firebaseConfig.appId
-  
-  if (!hasAllRequired) {
-    console.warn('Firebase config missing required fields:', {
-      apiKey: !!firebaseConfig.apiKey,
-      projectId: !!firebaseConfig.projectId,
-      authDomain: !!firebaseConfig.authDomain,
-      appId: !!firebaseConfig.appId
-    })
-  }
-  
-  return hasAllRequired
 }
 
 // Initialize Firebase
 let app
 let db
+let analytics
 
 if (isFirebaseConfigured()) {
   try {
     app = initializeApp(firebaseConfig)
     db = getFirestore(app)
+    
+    // Initialize Analytics (only in browser environment)
+    if (typeof window !== 'undefined') {
+      analytics = getAnalytics(app)
+    }
+    
     console.log('✅ Firebase initialized successfully')
   } catch (error) {
     console.error('❌ Firebase initialization failed:', error)
     db = null
+    analytics = null
   }
 } else {
-  console.error('❌ Firebase not configured. Missing environment variables.')
-  console.error('Current config values:', {
-    apiKey: firebaseConfig.apiKey ? `${firebaseConfig.apiKey.substring(0, 10)}...` : 'missing',
-    projectId: firebaseConfig.projectId || 'missing',
-    authDomain: firebaseConfig.authDomain || 'missing',
-    appId: firebaseConfig.appId || 'missing'
+  console.warn('Firebase not configured. Missing environment variables. Running in demo mode.')
+  console.warn('Required env vars:', {
+    apiKey: !!firebaseConfig.apiKey,
+    projectId: !!firebaseConfig.projectId,
+    authDomain: !!firebaseConfig.authDomain,
+    appId: !!firebaseConfig.appId
   })
 }
 
@@ -90,4 +92,4 @@ export async function addToWaitlist(email) {
   }
 }
 
-export { db }
+export { db, analytics }
